@@ -22,7 +22,7 @@ const ProfileAcc = async (
     <div className="max-w-[2520px] mx-auto ">
       <div className="w-full h-auto rounded-3xl flex flex-col gap-4">
         <ClientOnly>
-          <ScoreUser score={scoreFilter} />
+          {scoreFilter && <ScoreUser score={scoreFilter} />}
           {/* Pass the resolved value of user */}
         </ClientOnly>
       </div>

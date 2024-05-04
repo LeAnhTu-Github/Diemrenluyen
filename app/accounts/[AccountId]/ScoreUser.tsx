@@ -3,10 +3,10 @@ import Avatar from "@/app/components/Avatar";
 import React from "react";
 import Chart from "@/app/components/Chart";
 import UserStatis from "@/app/components/userStatics/UserStatic";
-import ImageUpload from "@/app/components/inputs/ImageUpload";
+import { SafeListing } from "@/app/types";
 import Image from "next/image";
 interface ScoreUserProps {
-  score: any;
+  score: SafeListing;
 }
 
 const ScoreUser = ({ score }: ScoreUserProps) => {
