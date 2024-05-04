@@ -12,11 +12,7 @@ const page = async ({ searchParams }: HomeProps) => {
   const scores = await getScore(searchParams);
   return (
     <ClientOnly>
-      {currentUser?.role === "admin" ? (
-        <AccountPage scores={scores} />
-      ) : (
-        <h1>Unauthorized</h1>
-      )}
+      <AccountPage scores={scores} />
     </ClientOnly>
   );
 };

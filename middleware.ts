@@ -8,4 +8,4 @@ export default withAuth({
     },
   },
 });
-export const config = { matcher: ["/admin:path*", "/accounts"] };
+export const config = { matcher: ["/admin:path*"] };

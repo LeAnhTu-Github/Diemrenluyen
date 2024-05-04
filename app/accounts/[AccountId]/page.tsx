@@ -15,9 +15,7 @@ const ProfileAcc = async (
   { searchParams }: HomeProps = { searchParams: {} }
 ) => {
   const scores = await getScore(searchParams);
-  const scoreFilter = scores.find(
-    (score) => score.tradeId === params.AccountId
-  );
+  const scoreFilter = scores.find((score) => score.id === params.AccountId);
   return (
     <div className="max-w-[2520px] mx-auto ">
       <div className="w-full h-auto rounded-3xl flex flex-col gap-4">
