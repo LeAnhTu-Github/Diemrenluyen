@@ -10,6 +10,17 @@ interface ScoreUserProps {
 }
 
 const ScoreUser = ({ score }: ScoreUserProps) => {
+  function splitAndFilter(imageSrc) {
+    // Chia chuỗi thành mảng sử dụng dấu phẩy làm dấu phân cách
+    let images = imageSrc.split(",");
+
+    // Loại bỏ phần tử rỗng cuối cùng nếu có
+    if (images[images.length - 1] === "") {
+      images.pop();
+    }
+
+    return images;
+  }
   return (
     <div className="w-full h-full flex flex-col gap-4">
       <div className="w-full h-72  flex gap-4">
@@ -84,7 +95,7 @@ const ScoreUser = ({ score }: ScoreUserProps) => {
         </div>
       </div>
       <div className="w-full h-auto flex gap-4 bg-white rounded-3xl flex-col">
-        <div className="w-full h-72 p-7">
+        <div className="w-full h-auto p-7">
           <div className="flex gap-4 items-center">
             <div className="w-5 h-9 rounded-md bg-[#3D8AFF]"></div>
             <p className="text-[#06080F] text-2xl font-semibold">
@@ -92,27 +103,25 @@ const ScoreUser = ({ score }: ScoreUserProps) => {
             </p>
           </div>
           <div
-            className="
-            mt-4
-            border-dashed 
-            h-full
-            border-2 
-            p-5
-            border-neutral-300
-            flex
-            justify-start
-            items-center
-            gap-4
-            text-neutral-600 rounded-3xl"
+            className="w-full border-2 border-dashed p-5 min-h-72 grid gap-4 
+            grid-cols-1 
+            sm:grid-cols-2 
+            md:grid-cols-3 
+            lg:grid-cols-4
+            xl:grid-cols-4
+            2xl:grid-cols-5"
           >
             {score?.imageSrc ? (
-              <Image
-                src={score?.imageSrc}
-                width={250}
-                height={250}
-                alt={"Không có minh chứng"}
-                className="rounded-3xl"
-              />
+              splitAndFilter(score?.imageSrc).map((item, index) => (
+                <Image
+                  key={index}
+                  src={item}
+                  width={250}
+                  height={250}
+                  alt="evidence"
+                  className="rounded-2xl h-[200px]"
+                />
+              ))
             ) : (
               <div className="flex justify-center items-center w-full h-full">
                 <h1>Chưa nộp điểm rèn luyện</h1>

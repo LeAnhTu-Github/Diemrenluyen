@@ -1,7 +1,8 @@
 "use client";
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -16,6 +17,14 @@ const Page = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [step, setStep] = useState(STEPS.INCREASE);
+  const [imageMC, setImageMC] = useState("");
+  const [totalImg, setTotalImg] = useState("");
+
+  useEffect(() => {
+    setTotalImg((prevTotalImg) =>
+      prevTotalImg ? `${prevTotalImg},${imageMC}` : imageMC
+    );
+  }, [imageMC]);
   const {
     register,
     handleSubmit,
@@ -94,6 +103,17 @@ const Page = () => {
       shouldValidate: true,
     });
   };
+  function splitAndFilter(imageSrc) {
+    // Chia chuỗi thành mảng sử dụng dấu phẩy làm dấu phân cách
+    let images = imageSrc.split(",");
+
+    // Loại bỏ phần tử rỗng cuối cùng nếu có
+    if (images[images.length - 1] === "") {
+      images.pop();
+    }
+
+    return images;
+  }
   const onBack = () => {
     setStep((value) => value - 1);
     window.scrollTo(0, 0);
@@ -111,6 +131,7 @@ const Page = () => {
       "totalScore",
       65 + sumIncrease(arrIncrease) - sumIncrease(arrDecrease)
     );
+
     if (step !== STEPS.PROOF) {
       return onNext();
     }
@@ -224,9 +245,34 @@ const Page = () => {
           setStep={setStep}
         />
         <ImageUpload
-          onChange={(value) => setCustomValue("imageSrc", value)}
-          value={imageSrc}
+          onChange={(value) =>
+            setCustomValue(
+              "imageSrc",
+              value ? `${value},${imageSrc}` : imageSrc
+            )
+          }
+          value={""}
         />
+        <div
+          className="w-full border-2 border-dashed p-5 min-h-72 grid gap-4 
+            grid-cols-1 
+            sm:grid-cols-2 
+            md:grid-cols-3 
+            lg:grid-cols-4
+            xl:grid-cols-4
+            2xl:grid-cols-5"
+        >
+          {splitAndFilter(imageSrc).map((item, index) => (
+            <Image
+              key={index}
+              src={item}
+              width={250}
+              height={250}
+              alt=""
+              className="rounded-2xl h-[180px]"
+            />
+          ))}
+        </div>
       </>
     );
   }
