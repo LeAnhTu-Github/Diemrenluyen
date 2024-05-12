@@ -1,9 +1,29 @@
+"use client";
 import React from "react";
 import Image from "next/image";
-import { CiHeart } from "react-icons/ci";
-const NewsCard = () => {
+import HeartButton from "../HeartButton";
+import { useRouter } from "next/navigation";
+import useEventModal from "@/app/hooks/useEventModal";
+interface DataProps {
+  id: string;
+  title: string;
+  name: string;
+  description: string;
+  time: string;
+  link: string;
+  author: string;
+  host: string;
+  imageEvent: string;
+  address: string;
+}
+interface NewsCardProps {
+  data: DataProps;
+}
+const NewsCard = ({ data }: NewsCardProps) => {
+  const router = useRouter();
+  const eventModal = useEventModal();
   return (
-    <div className="w-full h-full rounded-3xl border border-[#ccc] px-4 py-2 flex flex-col gap-3">
+    <div className="w-full h-full rounded-3xl border border-[#ccc] px-4 py-4 flex flex-col gap-3">
       <div className="flex gap-4 items-center">
         <div>
           <Image
@@ -14,25 +34,29 @@ const NewsCard = () => {
             className=" rounded-full"
           />
         </div>
-        <p className="text-[#06080F] text-base font-semibold">
-          Workshop: Diễn đàn trí tuệ
-        </p>
+        <p className="text-[#06080F] text-base font-semibold">{data.title}</p>
       </div>
       <div className="flex flex-col gap-2">
-        <p className="text-[#797D85] text-sm">
-          Diễn giả: Mr. Mạnh Cường - AI engineer
-        </p>
-        <p className="text-[#797D85] text-sm">Thời gian: 20/4/2024</p>
+        <p className="text-[#797D85] text-sm">Diễn giả: {data.author}</p>
+        <p className="text-[#797D85] text-sm">Thời gian: {data.time}</p>
       </div>
       <div className="flex justify-between w-full h-[36px]">
-        <div className="w-[64px] h-full rounded-xl px-2 py-3 bg-[#FFF2EB] flex justify-center items-center">
-          <p className="text-[#FF9159] text-sm font-semibold">23/30</p>
-        </div>
-        <div className="flex gap-4 h-full justify-center items-center">
-          <button className="w-[80px] h-full border border-blue-400 text-blue-400 rounded-xl">
+        <div className="flex gap-2">
+          <button
+            className="w-[80px] h-full btn btn-outline btn-success btn-sm"
+            onClick={() => router.push(`/eventPage/${data.id}`)}
+          >
+            Xem
+          </button>
+          <button
+            className="w-[80px] h-full btn btn-outline btn-info btn-sm"
+            onClick={eventModal.onOpen}
+          >
             Đăng kí
           </button>
-          <CiHeart size={30} />
+        </div>
+        <div className="flex gap-4 h-full justify-center items-center">
+          <HeartButton />
         </div>
       </div>
     </div>

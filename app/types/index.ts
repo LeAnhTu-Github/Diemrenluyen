@@ -1,7 +1,10 @@
-import { Score, User } from "@prisma/client";
+import { Register, Score, User } from "@prisma/client";
 import { Scope } from "eslint";
 
 export type SafeListing = Omit<Score, "createdAt"> & {
+  createdAt: string;
+};
+export type SafeRegis = Omit<Register, "createdAt"> & {
   createdAt: string;
 };
 
@@ -18,5 +21,11 @@ export enum STEPS {
   INCREASE = 0,
   REDUCE = 1,
   PROOF = 2,
+}
+export enum STATUS {
+  all = 0,
+  join = 1,
+  signup = 2,
+  notjoin = 3,
 }
 

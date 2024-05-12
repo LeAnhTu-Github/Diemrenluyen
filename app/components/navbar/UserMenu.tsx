@@ -71,9 +71,10 @@ const UserMenu = ({ currentUser }: userMenuProps) => {
                         right-0
                         top-12
                         text-sm 
+                        z-50
                     "
         >
-          <div className="flex flex-col cursor-pointer">
+          <div className="flex flex-col cursor-pointer ">
             {currentUser ? (
               currentUser.role === "admin" ? (
                 <>
@@ -84,6 +85,10 @@ const UserMenu = ({ currentUser }: userMenuProps) => {
                   <MenuItem
                     onCLick={() => router.push("/accounts")}
                     label="Quản lý tài khoản"
+                  />
+                  <MenuItem
+                    onCLick={() => router.push("/registers")}
+                    label="Quản lý đăng kí"
                   />
                   <MenuItem
                     onCLick={() => router.push(`/score`)}

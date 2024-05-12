@@ -3,6 +3,7 @@ import React from "react";
 import SectionInfo from "./SectionInfo";
 import SectionBox from "./SectionBox";
 import { SafeUser } from "@/app/types";
+import { useSession } from "next-auth/react";
 interface SidebarProps {
   currentUser?: SafeUser | null;
 }

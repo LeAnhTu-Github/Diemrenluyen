@@ -12,19 +12,20 @@ datasource db {
 }
 
 model User {
-    id             String    @id @default(auto()) @map("_id") @db.ObjectId
+    id             String     @id @default(auto()) @map("_id") @db.ObjectId
     name           String?
-    email          String?   @unique
+    email          String?    @unique
     emailVerified  DateTime?
     class          String?
     image          String?
     role           String? // New column
     hashedPassword String?
-    createdAt      DateTime  @default(now())
-    updatedAt      DateTime  @updatedAt
-    favoriteIds    String[]  @db.ObjectId
+    createdAt      DateTime   @default(now())
+    updatedAt      DateTime   @updatedAt
+    favoriteIds    String[]   @db.ObjectId
     trainingScores Score[]
     accounts       Account[]
+    registers      Register[]
 }
 
 model Account {
@@ -64,4 +65,18 @@ model Score {
     createdAt     DateTime @default(now())
     updatedAt     DateTime @updatedAt
     user          User     @relation(fields: [tradeId], references: [id])
+}
+
+model Register {
+    id         String   @id @default(auto()) @map("_id") @db.ObjectId
+    userId     String   @db.ObjectId
+    msv        String?
+    name       String?
+    email      String?
+    phone      String?
+    classUneti String?
+    question   String?
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
+    user       User     @relation(fields: [userId], references: [id])
 }

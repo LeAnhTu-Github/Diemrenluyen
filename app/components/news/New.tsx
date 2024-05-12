@@ -1,5 +1,6 @@
 import React from "react";
 import NewsCard from "./NewsCard";
+import { eventData } from "@/app/libs/data";
 
 const New = () => {
   return (
@@ -10,15 +11,11 @@ const New = () => {
       </div>
       <div className="w-full h-4/5 pt-8">
         <div className="carousel carousel-end rounded-box w-full h-full gap-8 flex">
-          <div className="carousel-item w-[30%]">
-            <NewsCard />
-          </div>
-          <div className="carousel-item w-[30%]">
-            <NewsCard />
-          </div>
-          <div className="carousel-item w-[30%]">
-            <NewsCard />
-          </div>
+          {eventData.slice(0, 3).map((data, index) => (
+            <div className="carousel-item w-[30%]" key={index}>
+              <NewsCard data={data} />
+            </div>
+          ))}
         </div>
       </div>
     </div>

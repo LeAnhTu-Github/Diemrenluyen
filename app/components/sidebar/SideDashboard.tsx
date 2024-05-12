@@ -1,30 +1,40 @@
 "use client";
 import React from "react";
 import { FaHome } from "react-icons/fa";
-import { Tb3DCubeSphere } from "react-icons/tb";
-import { CiUser } from "react-icons/ci";
-import { MdPayment, MdOutlinePayments } from "react-icons/md";
-import { RiQuestionnaireLine } from "react-icons/ri";
+import { MdInfoOutline } from "react-icons/md";
+import { MdCreditScore } from "react-icons/md";
+import { MdEvent } from "react-icons/md";
 import { usePathname } from "next/navigation";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { SafeUser } from "@/app/types";
 interface SidebarProps {
   currentUser?: SafeUser | null;
 }
 const SideDashboard = ({ currentUser }: SidebarProps) => {
   const pathname = usePathname();
+  const router = useRouter();
   let checkHome;
   let checkPoit;
+  let checkEvent;
+  let checkAccount;
   switch (pathname) {
     case "/":
       checkHome = true;
       break;
-    case "/Point":
+    case "/score":
       checkPoit = true;
+      break;
+    case "/eventPage":
+      checkEvent = true;
+      break;
+    case "/accounts":
+      checkAccount = true;
       break;
     default:
       checkHome = false;
       checkPoit = false;
+      checkEvent = false;
+      checkAccount = false;
   }
   return (
     <div>
@@ -33,6 +43,7 @@ const SideDashboard = ({ currentUser }: SidebarProps) => {
           className={`w-full h-1/6 flex justify-start items-center rounded-2xl px-4 py-5 
             ${checkHome ? "bg-[#EFF6FF]" : "bg-white"}
           `}
+          onClick={() => router.push("/")}
         >
           <FaHome
             size={20}
@@ -46,19 +57,47 @@ const SideDashboard = ({ currentUser }: SidebarProps) => {
             Trang chủ
           </p>
         </div>
-        <div className="w-full h-1/6 flex justify-start items-center rounded-2xl px-4 py-5 ">
-          <Tb3DCubeSphere size={20} className="fill-[#797D85]" />
-          <p className="text-base text-[#797D85] font-medium pl-4">Sự Kiện</p>
+        <div
+          className={`w-full h-1/6 flex justify-start items-center rounded-2xl px-4 py-5 
+            ${checkEvent ? "bg-[#EFF6FF]" : "bg-white"}
+          `}
+          onClick={() => router.push("/eventPage")}
+        >
+          <MdEvent
+            size={20}
+            className={`${checkEvent ? "fill-[#3D8AFF]" : "fill-[#797D85]"}`}
+          />
+          <p
+            className={`text-base ${
+              checkEvent ? "text-[#3D8AFF]" : "text-[#797D85]"
+            } font-medium pl-4`}
+          >
+            Sự Kiện
+          </p>
         </div>
-        <div className="w-full h-1/6 flex justify-start items-center rounded-2xl px-4 py-5 ">
-          <CiUser size={20} className="fill-[#797D85]" />
-          <p className="text-base text-[#797D85] font-medium pl-4">Thông tin</p>
+        <div
+          className={`w-full h-1/6 flex justify-start items-center rounded-2xl px-4 py-5 
+        ${checkAccount ? "bg-[#EFF6FF]" : "bg-white"}`}
+          onClick={() => router.push("/accounts")}
+        >
+          <MdInfoOutline
+            size={20}
+            className={`${checkAccount ? "fill-[#3D8AFF]" : "fill-[#797D85]"}`}
+          />
+          <p
+            className={`text-base ${
+              checkAccount ? "text-[#3D8AFF]" : "text-[#797D85]"
+            } font-medium pl-4`}
+          >
+            Thông tin
+          </p>
         </div>
         <div
           className={`w-full h-1/6 flex justify-start items-center rounded-2xl px-4 py-5 
         ${checkPoit ? "bg-[#EFF6FF]" : "bg-white"}`}
+          onClick={() => router.push("/score")}
         >
-          <MdPayment
+          <MdCreditScore
             size={20}
             className={`${checkPoit ? "fill-[#3D8AFF]" : "fill-[#797D85]"}`}
           />
@@ -69,10 +108,6 @@ const SideDashboard = ({ currentUser }: SidebarProps) => {
           >
             Điểm rèn luyện
           </p>
-        </div>
-        <div className="w-full h-1/6 flex justify-start items-center rounded-2xl px-4 py-5 ">
-          <RiQuestionnaireLine size={20} className="fill-[#797D85]" />
-          <p className="text-base text-[#797D85] font-medium pl-4">Câu hỏi</p>
         </div>
       </div>
     </div>

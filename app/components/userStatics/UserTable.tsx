@@ -1,128 +1,142 @@
+"use client";
 import React from "react";
-const table = [
-  {
-    id: 1,
-    event: "Hội thảo khoa học và công nghệ",
-    time: "15/3/2024",
-    link: "https://uneti.edu.vn/category/thong-bao/",
-    status: {
-      join: true,
-      signup: false,
-      notjoin: false,
-    },
-  },
-  {
-    id: 2,
-    event: "Workshop trí tuệ nhân tạo",
-    time: "15/3/2024",
-    link: "https://uneti.edu.vn/category/thong-bao/",
-    status: {
-      join: false,
-      signup: true,
-      notjoin: false,
-    },
-  },
-  {
-    id: 3,
-    event: "Workshop trí tuệ nhân tạo",
-    time: "15/3/2024",
-    link: "https://uneti.edu.vn/category/thong-bao/",
-    status: {
-      join: false,
-      signup: false,
-      notjoin: true,
-    },
-  },
-  {
-    id: 4,
-    event: "Hội thảo khoa học và công nghệ",
-    time: "15/3/2024",
-    link: "https://uneti.edu.vn/category/thong-bao/",
-    status: {
-      join: true,
-      signup: false,
-      notjoin: false,
-    },
-  },
-  {
-    id: 5,
-    event: "Hội thảo khoa học và công nghệ",
-    time: "15/3/2024",
-    link: "https://uneti.edu.vn/category/thong-bao/",
-    status: {
-      join: true,
-      signup: false,
-      notjoin: false,
-    },
-  },
-  {
-    id: 6,
-    event: "Hội thảo khoa học và công nghệ",
-    time: "15/3/2024",
-    link: "https://uneti.edu.vn/category/thong-bao/",
-    status: {
-      join: true,
-      signup: false,
-      notjoin: false,
-    },
-  },
-  {
-    id: 7,
-    event: "Workshop trí tuệ nhân tạo",
-    time: "15/3/2024",
-    link: "https://uneti.edu.vn/category/thong-bao/",
-    status: {
-      join: false,
-      signup: true,
-      notjoin: false,
-    },
-  },
-  {
-    id: 8,
-    event: "Workshop trí tuệ nhân tạo",
-    time: "15/3/2024",
-    link: "https://uneti.edu.vn/category/thong-bao/",
-    status: {
-      join: false,
-      signup: false,
-      notjoin: true,
-    },
-  },
-  {
-    id: 9,
-    event: "Hội thảo khoa học và công nghệ",
-    time: "15/3/2024",
-    link: "https://uneti.edu.vn/category/thong-bao/",
-    status: {
-      join: true,
-      signup: false,
-      notjoin: false,
-    },
-  },
-  {
-    id: 10,
-    event: "Workshop trí tuệ nhân tạo",
-    time: "15/3/2024",
-    link: "https://uneti.edu.vn/category/thong-bao/",
-    status: {
-      join: false,
-      signup: true,
-      notjoin: false,
-    },
-  },
-  {
-    id: 11,
-    event: "Workshop trí tuệ nhân tạo",
-    time: "15/3/2024",
-    link: "https://uneti.edu.vn/category/thong-bao/",
-    status: {
-      join: false,
-      signup: false,
-      notjoin: true,
-    },
-  },
-];
-const UserTable = () => {
+import { table } from "@/app/libs/data";
+import { STATUS } from "@/app/types/index";
+interface UserTableProps {
+  status: STATUS;
+  setStatus: (value: STATUS) => void;
+}
+const UserTable = ({ status, setStatus }: UserTableProps) => {
+  let bodyContent;
+  if (status === STATUS.signup) {
+    bodyContent = (
+      <>
+        {table
+          .filter((item) => item.status.signup)
+          .map((item) => (
+            <tr key={item.id}>
+              <th>{item.id}</th>
+              <td>{item.event}</td>
+              <td>{item.time}</td>
+              <td>{item.link}</td>
+              <td>
+                <div
+                  className={`flex justify-center items-center text-sm font-semibold rounded-lg p-3                 
+                    ${
+                      item.status.signup
+                        ? "bg-[#E7FAE2] text-[#65BF4E]"
+                        : "bg-[#FFEDED] text-[#F04A4A]"
+                    }
+                    `}
+                >
+                  {item.status.signup ? "Đăng kí" : "Chưa đăng kí"}
+                </div>
+              </td>
+            </tr>
+          ))}
+      </>
+    );
+  } else if (status === STATUS.join) {
+    bodyContent = (
+      <>
+        {table
+          .filter((item) => item.status.join)
+          .map((item) => (
+            <tr key={item.id}>
+              <th>{item.id}</th>
+              <td>{item.event}</td>
+              <td>{item.time}</td>
+              <td>{item.link}</td>
+              <td>
+                <div
+                  className={`flex justify-center items-center text-sm font-semibold rounded-lg p-3                 
+                    ${
+                      item.status.join
+                        ? "bg-[#EFF6FF] text-[#3D8AFF]"
+                        : item.status.signup
+                        ? "bg-[#E7FAE2] text-[#65BF4E]"
+                        : "bg-[#FFEDED] text-[#F04A4A]"
+                    }
+                    `}
+                >
+                  {item.status.join
+                    ? "Tham gia"
+                    : item.status.signup
+                    ? "Đăng kí"
+                    : "Chưa đăng kí"}
+                </div>
+              </td>
+            </tr>
+          ))}
+      </>
+    );
+  } else if (status === STATUS.notjoin) {
+    bodyContent = (
+      <>
+        {table
+          .filter((item) => item.status.notjoin)
+          .map((item) => (
+            <tr key={item.id}>
+              <th>{item.id}</th>
+              <td>{item.event}</td>
+              <td>{item.time}</td>
+              <td>{item.link}</td>
+              <td>
+                <div
+                  className={`flex justify-center items-center text-sm font-semibold rounded-lg p-3                 
+                    ${
+                      item.status.join
+                        ? "bg-[#EFF6FF] text-[#3D8AFF]"
+                        : item.status.signup
+                        ? "bg-[#E7FAE2] text-[#65BF4E]"
+                        : "bg-[#FFEDED] text-[#F04A4A]"
+                    }
+                    `}
+                >
+                  {item.status.join
+                    ? "Tham gia"
+                    : item.status.signup
+                    ? "Đăng kí"
+                    : "Chưa đăng kí"}
+                </div>
+              </td>
+            </tr>
+          ))}
+      </>
+    );
+  } else {
+    bodyContent = (
+      <>
+        {table.map((item) => (
+          <tr key={item.id}>
+            <th>{item.id}</th>
+            <td>{item.event}</td>
+            <td>{item.time}</td>
+            <td>{item.link}</td>
+            <td>
+              <div
+                className={`flex justify-center items-center text-sm font-semibold rounded-lg p-3                 
+                    ${
+                      item.status.join
+                        ? "bg-[#EFF6FF] text-[#3D8AFF]"
+                        : item.status.signup
+                        ? "bg-[#E7FAE2] text-[#65BF4E]"
+                        : "bg-[#FFEDED] text-[#F04A4A]"
+                    }
+                    `}
+              >
+                {item.status.join
+                  ? "Tham gia"
+                  : item.status.signup
+                  ? "Đăng kí"
+                  : "Chưa đăng kí"}
+              </div>
+            </td>
+          </tr>
+        ))}
+      </>
+    );
+  }
   return (
     <div className="w-full h-auto">
       <div className="overflow-x-auto">
@@ -137,35 +151,7 @@ const UserTable = () => {
               <th>Trạng thái</th>
             </tr>
           </thead>
-          <tbody>
-            {table.map((item) => (
-              <tr key={item.id}>
-                <th>{item.id}</th>
-                <td>{item.event}</td>
-                <td>{item.time}</td>
-                <td>{item.link}</td>
-                <td>
-                  <div
-                    className={`flex justify-center items-center text-sm font-semibold rounded-lg p-3                 
-                    ${
-                      item.status.join
-                        ? "bg-[#EFF6FF] text-[#3D8AFF]"
-                        : item.status.signup
-                        ? "bg-[#E7FAE2] text-[#65BF4E]"
-                        : "bg-[#FFEDED] text-[#F04A4A]"
-                    }
-                    `}
-                  >
-                    {item.status.join
-                      ? "Tham gia"
-                      : item.status.signup
-                      ? "Đăng kí"
-                      : "Chưa đăng kí"}
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
+          <tbody>{bodyContent}</tbody>
         </table>
       </div>
     </div>
