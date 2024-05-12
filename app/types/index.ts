@@ -1,5 +1,4 @@
 import { Register, Score, User } from "@prisma/client";
-import { Scope } from "eslint";
 
 export type SafeListing = Omit<Score, "createdAt"> & {
   createdAt: string;
