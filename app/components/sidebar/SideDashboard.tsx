@@ -78,7 +78,7 @@ const SideDashboard = ({ currentUser }: SidebarProps) => {
         <div
           className={`w-full h-1/6 flex justify-start items-center rounded-2xl px-4 py-5 
         ${checkAccount ? "bg-[#EFF6FF]" : "bg-white"}`}
-          onClick={() => router.push("/accounts")}
+          onClick={() => router.push(`/accounts/${currentUser?.id}`)}
         >
           <MdInfoOutline
             size={20}
