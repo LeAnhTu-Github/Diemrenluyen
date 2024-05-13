@@ -1,11 +1,11 @@
-import { Register, Score, User } from "@prisma/client";
+import { Score, User } from "@prisma/client";
 
 export type SafeListing = Omit<Score, "createdAt"> & {
   createdAt: string;
 };
-export type SafeRegis = Omit<Register, "createdAt"> & {
-  createdAt: string;
-};
+// export type SafeRegis = Omit<Register, "createdAt"> & {
+//   createdAt: string;
+// };
 
 export type SafeUser = Omit<
   User,

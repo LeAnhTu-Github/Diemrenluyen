@@ -1,13 +1,12 @@
 "use client";
 import React from "react";
-import { SafeRegis } from "../types";
 import ClientOnly from "../components/ClientOnly";
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import toast from "react-hot-toast";
 interface ScoreProps {
-  regis: SafeRegis[];
+  regis: any[];
 }
 
 const RegisterPage = ({ regis }: ScoreProps) => {
