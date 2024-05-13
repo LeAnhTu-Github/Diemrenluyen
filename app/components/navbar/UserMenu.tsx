@@ -9,9 +9,10 @@ import useLoginModal from "@/app/hooks/useLoginModal";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { SafeRegis, SafeUser } from "@/app/types";
 
 interface userMenuProps {
-  currentUser?: any | null;
+  currentUser?: SafeUser | null;
 }
 const UserMenu = ({ currentUser }: userMenuProps) => {
   const router = useRouter();

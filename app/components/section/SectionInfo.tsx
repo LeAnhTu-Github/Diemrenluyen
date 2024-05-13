@@ -1,8 +1,9 @@
 import React from "react";
 import Avatar from "../Avatar";
+import { SafeUser } from "@/app/types";
 // import { SafeUser } from "@/app/types";
 interface SidebarProps {
-  currentUser?: any | null;
+  currentUser?: SafeUser | null;
 }
 const SectionInfo = ({ currentUser }: SidebarProps) => {
   return (

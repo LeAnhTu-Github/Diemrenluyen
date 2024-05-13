@@ -3,8 +3,9 @@ import React from "react";
 import Image from "next/image";
 import SideDashboard from "./SideDashboard";
 import SideAvatar from "./SideAvatar";
+import { SafeUser } from "@/app/types";
 interface SidebarProps {
-  currentUser?: any | null;
+  currentUser?: SafeUser | null;
 }
 const Sidebar = ({ currentUser }: SidebarProps) => {
   return (

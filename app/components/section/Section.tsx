@@ -3,8 +3,9 @@ import React from "react";
 import SectionInfo from "./SectionInfo";
 import SectionBox from "./SectionBox";
 import { useSession } from "next-auth/react";
+import { SafeUser } from "@/app/types";
 interface SidebarProps {
-  currentUser?: any | null;
+  currentUser?: SafeUser | null;
 }
 const Section = ({ currentUser }: SidebarProps) => {
   return (

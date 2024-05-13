@@ -1,19 +1,19 @@
+import { Register, Score, User } from "@prisma/client";
+export type SafeListing = Omit<Score, "createdAt"> & {
+  createdAt: string;
+};
+export type SafeRegis = Omit<Register, "createdAt"> & {
+  createdAt: string;
+};
 
-// export type SafeListing = Omit<Score, "createdAt"> & {
-//   createdAt: string;
-// };
-// export type SafeRegis = Omit<Register, "createdAt"> & {
-//   createdAt: string;
-// };
-
-// export type SafeUser = Omit<
-//   User,
-//   "createdAt" | "updatedAt" | "emailVerified"
-// > & {
-//   createdAt: string;
-//   updatedAt: string;
-//   emailVerified: string | null;
-// };
+export type SafeUser = Omit<
+  User,
+  "createdAt" | "updatedAt" | "emailVerified"
+> & {
+  createdAt: string;
+  updatedAt: string;
+  emailVerified: string | null;
+};
 
 export enum STEPS {
   INCREASE = 0,

@@ -4,9 +4,10 @@ import ClientOnly from "../components/ClientOnly";
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import { SafeRegis } from "../types";
 import toast from "react-hot-toast";
 interface ScoreProps {
-  regis: any[];
+  regis: SafeRegis[];
 }
 
 const RegisterPage = ({ regis }: ScoreProps) => {
