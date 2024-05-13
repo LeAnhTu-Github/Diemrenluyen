@@ -1,11 +1,10 @@
 "use client";
-import { SafeUser } from "@/app/types";
 
 import Container from "../Container";
 import UserMenu from "./UserMenu";
 import { useRouter } from "next/navigation";
 interface NavbarProps {
-  currentUser?: SafeUser | null;
+  currentUser?: any | null;
 }
 
 const Navbar: React.FC<NavbarProps> = ({ currentUser }) => {

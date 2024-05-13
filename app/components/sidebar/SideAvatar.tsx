@@ -1,8 +1,8 @@
 import React from "react";
 import Avatar from "../Avatar";
-import { SafeUser } from "@/app/types";
+// import { SafeUser } from "@/app/types";
 interface SidebarProps {
-  currentUser?: SafeUser | null;
+  currentUser?: any | null;
 }
 const SideAvatar = ({ currentUser }: SidebarProps) => {
   return (

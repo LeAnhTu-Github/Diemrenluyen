@@ -5,13 +5,13 @@ import Avatar from "../Avatar";
 import MenuItem from "./MenuItem";
 import useRegisterModal from "@/app/hooks/useRegisterModal";
 import useLoginModal from "@/app/hooks/useLoginModal";
-import { SafeUser } from "@/app/types";
+// import { SafeUser } from "@/app/types";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
 interface userMenuProps {
-  currentUser?: SafeUser | null;
+  currentUser?: any | null;
 }
 const UserMenu = ({ currentUser }: userMenuProps) => {
   const router = useRouter();
