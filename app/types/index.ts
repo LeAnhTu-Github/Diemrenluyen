@@ -1,4 +1,3 @@
-import {  User } from "@prisma/client";
 
 // export type SafeListing = Omit<Score, "createdAt"> & {
 //   createdAt: string;
