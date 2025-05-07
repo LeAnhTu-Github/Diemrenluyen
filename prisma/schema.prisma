@@ -10,23 +10,16 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-enum Role {
-    USER
-    ADMIN
-    STUDENT // Ví dụ
-    TEACHER // Ví dụ
-    // Thêm các role khác nếu cần
-}
 
 model User {
     id             String     @id @default(auto()) @map("_id") @db.ObjectId
     name           String?
     email          String?    @unique
     emailVerified  DateTime?
-    // class          String? // Xem xét đổi tên
+    class          String? // Xem xét đổi tên
     className      String? // Đề xuất đổi tên từ 'class'
     image          String?
-    role           Role? // Sử dụng Enum Role
+    role           String? // Sử dụng Enum Role
     hashedPassword String?
     createdAt      DateTime   @default(now())
     updatedAt      DateTime   @updatedAt
@@ -41,11 +34,11 @@ model Account {
     userId            String  @db.ObjectId
     type              String
     provider          String
-    // class             String? // Xem xét đổi tên
+    class             String? // Xem xét đổi tên
     providerAccountId String
     refresh_token     String? @db.String
     access_token      String? @db.String
-    role              Role? // Sử dụng Enum Role
+    role              String? // Sử dụng Enum Role
     expires_at        Int?
     token_type        String?
     scope             String? // Thường là optional
@@ -214,8 +207,8 @@ model Evaluation {
     updatedAt    DateTime @updatedAt
 
     // Nếu bạn muốn liên kết với DoanVien thay vì User, hãy sửa lại như sau:
-    maDV      String
-    doanVien  DoanVien @relation("DoanVienToEvaluation", fields: [maDV], references: [maDV])
+    maDV      String?
+    doanVien  DoanVien? @relation("DoanVienToEvaluation", fields: [maDV], references: [maDV])
 
     // user      User     @relation(fields: [userId], references: [id])
 }

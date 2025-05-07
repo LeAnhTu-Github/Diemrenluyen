@@ -12,6 +12,7 @@ const evaluationSchema = z.object({
   reward: z.string().optional(),
   discipline: z.string().optional(),
   rating: z.number().optional(),
+  maDV: z.string().optional(),
 });
 
 // POST: Thêm đánh giá mới
