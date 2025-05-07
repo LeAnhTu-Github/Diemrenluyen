@@ -75,6 +75,37 @@ model Score {
     user          User     @relation(fields: [userId], references: [id]) // Liên kết với User qua userId
 }
 
+model Event {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String
+  title       String
+  name        String?
+  date        DateTime?
+  link        String?
+  author      String?
+  host        String?
+  imageUrl    String?
+  address     String?
+  description String?
+  codeQR      String?
+  isPublished Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model userRegister {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId     String
+  eventId    String
+  masv       String?
+  name       String?
+  email      String?
+  class      String?
+  question   String?
+  isRegister Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
 model Register {
     id         String   @id @default(auto()) @map("_id") @db.ObjectId
     userId     String   @db.ObjectId
@@ -140,6 +171,7 @@ model DoanVien {
     doanPhi     DoanPhi? // Quan hệ một-một với DoanPhi
     ktkls       KTKL[] // Khen thưởng kỷ luật
     renLuyens   RenLuyen[] // Điểm rèn luyện
+    evaluations Evaluation[] @relation("DoanVienToEvaluation")
     createdAt   DateTime   @default(now())
     updatedAt   DateTime   @updatedAt
 }
@@ -166,4 +198,24 @@ model RenLuyen {
     updatedAt DateTime @updatedAt
 
     @@unique([maDV, hocKy])
+}
+
+model Evaluation {
+    id           String   @id @default(auto()) @map("_id") @db.ObjectId
+    userId       String   @db.ObjectId // Tham chiếu tới đoàn viên (User hoặc DoanVien)
+    year         Int
+    semester     Int?     // Nếu đánh giá theo học kỳ, có thể nullable
+    strengths    String?  // Ưu điểm
+    weaknesses   String?  // Khuyết điểm
+    reward       String?  // Khen thưởng
+    discipline   String?  // Kỷ luật
+    rating       Int?     // Xếp loại/Đánh giá tổng kết (ví dụ: Hoàn thành xuất sắc nhiệm vụ)
+    createdAt    DateTime @default(now())
+    updatedAt    DateTime @updatedAt
+
+    // Nếu bạn muốn liên kết với DoanVien thay vì User, hãy sửa lại như sau:
+    maDV      String
+    doanVien  DoanVien @relation("DoanVienToEvaluation", fields: [maDV], references: [maDV])
+
+    // user      User     @relation(fields: [userId], references: [id])
 }
