@@ -88,7 +88,7 @@ const UserMenu = ({ currentUser }: userMenuProps) => {
                     label="Quản lý tài khoản"
                   />
                   <MenuItem
-                    onCLick={() => router.push("/registers")}
+                    onCLick={() => router.push("/teacher/events")}
                     label="Quản lý đăng kí"
                   />
                   <MenuItem

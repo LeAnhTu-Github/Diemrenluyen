@@ -1,4 +1,4 @@
-import { Register, Score, User } from "@prisma/client";
+import { Register, Score, User, DoanVien, ChiDoan, DoanCS } from "@prisma/client";
 export type SafeListing = Omit<Score, "createdAt"> & {
   createdAt: string;
 };
@@ -26,4 +26,10 @@ export enum STATUS {
   signup = 2,
   notjoin = 3,
 }
+
+export type SafeDoanVien = DoanVien & {
+  chiDoan?: (ChiDoan & {
+    doanCS?: DoanCS;
+  }) | null;
+};
 

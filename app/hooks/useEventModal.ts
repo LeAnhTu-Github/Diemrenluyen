@@ -1,15 +1,17 @@
 import { create } from "zustand";
 
 interface EventModalStore {
+  eventId: string;
   isOpen: boolean;
-  onOpen: () => void;
+  onOpen: (id: string) => void;
   onClose: () => void;
 }
 
 const useEventModal = create<EventModalStore>((set) => ({
+  eventId: "",
   isOpen: false,
-  onOpen: () => set({ isOpen: true }),
-  onClose: () => set({ isOpen: false }),
+  onOpen: (id: string) => set({ isOpen: true, eventId: id }),
+  onClose: () => set({ isOpen: false, eventId: "" }),
 }));
 
 export default useEventModal;

@@ -1,114 +1,62 @@
 "use client";
 import React from "react";
 import { FaHome } from "react-icons/fa";
-import { MdInfoOutline } from "react-icons/md";
-import { MdCreditScore } from "react-icons/md";
-import { MdEvent } from "react-icons/md";
-import { usePathname } from "next/navigation";
-import { useRouter } from "next/navigation";
+import { MdInfoOutline, MdCreditScore, MdEvent } from "react-icons/md";
+import { usePathname, useRouter } from "next/navigation";
 import { SafeUser } from "@/app/types";
+
 interface SidebarProps {
   currentUser?: SafeUser | null;
 }
+
+const adminLinks = [
+  { label: "Sự kiện", path: "/teacher/events", icon: MdEvent },
+  { label: "Đoàn cơ sở", path: "/teacher/doancoso", icon: MdInfoOutline },
+  { label: "Chi đoàn", path: "/teacher/chidoan", icon: MdInfoOutline },
+  { label: "Đoàn viên", path: "/teacher/doanvien", icon: MdInfoOutline },
+  { label: "Điểm rèn luyện", path: "/teacher/score", icon: MdCreditScore },
+  { label: "Đánh giá", path: "/teacher/danhgia", icon: MdCreditScore },
+];
+
+const userLinks = [
+  { label: "Trang chủ", path: "/", icon: FaHome },
+  { label: "Sự kiện", path: "/pageEvent", icon: MdEvent },
+  { label: "Điểm rèn luyện", path: "/score", icon: MdCreditScore },
+];
+
 const SideDashboard = ({ currentUser }: SidebarProps) => {
   const pathname = usePathname();
   const router = useRouter();
-  let checkHome;
-  let checkPoit;
-  let checkEvent;
-  let checkAccount;
-  switch (pathname) {
-    case "/":
-      checkHome = true;
-      break;
-    case "/score":
-      checkPoit = true;
-      break;
-    case "/eventPage":
-      checkEvent = true;
-      break;
-    case "/accounts":
-      checkAccount = true;
-      break;
-    default:
-      checkHome = false;
-      checkPoit = false;
-      checkEvent = false;
-      checkAccount = false;
-  }
+  const isAdmin = currentUser?.role === "admin";
+  const links = isAdmin ? adminLinks : userLinks;
+
   return (
     <div>
-      <div className="bg-white w-full h-[336px] px-6 py-4">
-        <div
-          className={`w-full h-1/6 flex justify-start items-center rounded-2xl px-4 py-5 
-            ${checkHome ? "bg-[#EFF6FF]" : "bg-white"}
-          `}
-          onClick={() => router.push("/")}
-        >
-          <FaHome
-            size={20}
-            className={`${checkHome ? "fill-[#3D8AFF]" : "fill-[#797D85]"}`}
-          />
-          <p
-            className={`text-base ${
-              checkHome ? "text-[#3D8AFF]" : "text-[#797D85]"
-            } font-medium pl-4`}
-          >
-            Trang chủ
-          </p>
-        </div>
-        <div
-          className={`w-full h-1/6 flex justify-start items-center rounded-2xl px-4 py-5 
-            ${checkEvent ? "bg-[#EFF6FF]" : "bg-white"}
-          `}
-          onClick={() => router.push("/eventPage")}
-        >
-          <MdEvent
-            size={20}
-            className={`${checkEvent ? "fill-[#3D8AFF]" : "fill-[#797D85]"}`}
-          />
-          <p
-            className={`text-base ${
-              checkEvent ? "text-[#3D8AFF]" : "text-[#797D85]"
-            } font-medium pl-4`}
-          >
-            Sự Kiện
-          </p>
-        </div>
-        <div
-          className={`w-full h-1/6 flex justify-start items-center rounded-2xl px-4 py-5 
-        ${checkAccount ? "bg-[#EFF6FF]" : "bg-white"}`}
-          onClick={() => router.push(`/accounts/${currentUser?.id}`)}
-        >
-          <MdInfoOutline
-            size={20}
-            className={`${checkAccount ? "fill-[#3D8AFF]" : "fill-[#797D85]"}`}
-          />
-          <p
-            className={`text-base ${
-              checkAccount ? "text-[#3D8AFF]" : "text-[#797D85]"
-            } font-medium pl-4`}
-          >
-            Thông tin
-          </p>
-        </div>
-        <div
-          className={`w-full h-1/6 flex justify-start items-center rounded-2xl px-4 py-5 
-        ${checkPoit ? "bg-[#EFF6FF]" : "bg-white"}`}
-          onClick={() => router.push("/score")}
-        >
-          <MdCreditScore
-            size={20}
-            className={`${checkPoit ? "fill-[#3D8AFF]" : "fill-[#797D85]"}`}
-          />
-          <p
-            className={`text-base ${
-              checkPoit ? "text-[#3D8AFF]" : "text-[#797D85]"
-            } font-medium pl-4`}
-          >
-            Điểm rèn luyện
-          </p>
-        </div>
+      <div className="bg-white w-full px-2 py-4 rounded-2xl">
+        {links.map((item) => {
+          const isActive = pathname === item.path;
+          return (
+            <div
+              key={item.path}
+              className={`w-full flex items-center rounded-2xl px-4 py-5 mb-2 cursor-pointer transition
+                ${isActive ? "bg-[#EFF6FF]" : "bg-white"}
+              `}
+              onClick={() => router.push(item.path)}
+            >
+              <item.icon
+                size={20}
+                className={isActive ? "fill-[#3D8AFF]" : "fill-[#797D85]"}
+              />
+              <p
+                className={`text-base font-medium pl-4 ${
+                  isActive ? "text-[#3D8AFF]" : "text-[#797D85]"
+                }`}
+              >
+                {item.label}
+              </p>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
