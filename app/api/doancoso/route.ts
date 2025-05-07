@@ -8,13 +8,21 @@ export async function GET(req: Request) {
   try {
     const doanCSs = await prisma.doanCS.findMany({
       include: {
-        // chiDoans: true, // Bỏ comment nếu muốn lấy danh sách chi đoàn của mỗi Đoàn CS
-        _count: { // Đếm số lượng Chi Đoàn trong mỗi Đoàn Cơ Sở
+        chiDoans: { // Lấy danh sách các Chi Đoàn thuộc Đoàn Cơ Sở này
+          orderBy: {
+            tenCD: 'asc' // Sắp xếp các Chi Đoàn theo tên
+          },
+          // Nếu bạn muốn lấy thêm thông tin lồng sâu hơn cho mỗi Chi Đoàn:
+          // include: {
+          //   _count: { select: { doanViens: true } } // Ví dụ: đếm số đoàn viên của Chi Đoàn
+          // }
+        },
+        _count: { // Vẫn giữ lại để đếm tổng số Chi Đoàn (nếu cần ở một view khác)
           select: { chiDoans: true }
         }
       },
       orderBy: {
-        tenDCS: 'asc', // Sắp xếp theo tên Đoàn Cơ Sở (trường trong model là tenDCS, map từ TENDCS)
+        tenDCS: 'asc', // Sắp xếp danh sách các Đoàn Cơ Sở theo tên
       },
     });
     return NextResponse.json(doanCSs);

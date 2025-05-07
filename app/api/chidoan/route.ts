@@ -1,57 +1,31 @@
 import { NextResponse } from 'next/server';
+// Đảm bảo đường dẫn này chính xác đến file prisma client của bạn.
+// Ví dụ: import prisma from '@/lib/prismadb';
 import prisma from "@/app/libs/prismadb"; // Giữ nguyên theo yêu cầu của bạn
-import { Params } from 'next/dist/shared/lib/router/utils/route-matcher';
 
 // GET - Lấy tất cả Chi Đoàn
-// ... (các import và interface params giữ nguyên)
-
-export async function GET(req: Request, { params }: { params: Params }) { // Params là { maCD: string }
-  const { maCD } = params;
+export async function GET(req: Request) {
   try {
-    const chiDoan = await prisma.chiDoan.findUnique({
-      where: { maCD },
+    const chiDoans = await prisma.chiDoan.findMany({
       include: {
-        doanCS: true,
-        doanViens: { // Lấy danh sách đoàn viên thuộc chi đoàn này
-          orderBy: {
-            // Sắp xếp đoàn viên, ví dụ theo tên
-            // hoDV: 'asc',
-            tenDV: 'asc'
-          },
-          include: {
-            doanPhi: true // QUAN TRỌNG: Bao gồm thông tin Đoàn Phí
-          }
-        },
+        doanCS: true, // Lấy thông tin Đoàn Cơ Sở liên quan
+        _count: { // Đếm số lượng đoàn viên trong mỗi chi đoàn
+          select: { doanViens: true }
+        }
+      },
+      orderBy: {
+        tenCD: 'asc', // Sắp xếp theo tên Chi Đoàn (trường trong model là tenCD, map từ TENCD)
       },
     });
-
-    if (!chiDoan) {
-      return NextResponse.json({ message: `Chi Đoàn với mã '${maCD}' không tìm thấy.` }, { status: 404 });
-    }
-
-    // Xử lý trường hợp đoàn viên chưa có bản ghi DoanPhi
-    // (Nếu muốn client luôn nhận được object doanPhi với các trường hk)
-    const chiDoanWithDefaultDoanPhi = {
-        ...chiDoan,
-        doanViens: chiDoan.doanViens.map(dv => ({
-            ...dv,
-            doanPhi: dv.doanPhi || { maDV: dv.maDV, hk1: 0, hk2: 0, hk3: 0, hk4: 0, hk5: 0, hk6: 0, hk7: 0, hk8: 0 }
-        }))
-    };
-
-
-    return NextResponse.json(chiDoanWithDefaultDoanPhi);
-    // Hoặc chỉ return NextResponse.json(chiDoan); nếu client tự xử lý việc DoanPhi có thể là null
+    return NextResponse.json(chiDoans);
   } catch (error) {
-    console.error(`GET /api/chidoans/${maCD} error:`, error);
+    console.error('GET /api/chidoans error:', error);
     return NextResponse.json(
-      { message: `Lỗi khi lấy thông tin Chi Đoàn '${maCD}'`, error: (error as Error).message },
+      { message: 'Lỗi khi lấy danh sách Chi Đoàn', error: (error as Error).message },
       { status: 500 }
     );
   }
 }
-
-// ... (PUT, DELETE của ChiDoan giữ nguyên)
 
 // POST - Thêm mới Chi Đoàn
 export async function POST(req: Request) {

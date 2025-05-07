@@ -1,75 +1,89 @@
+// File: app/api/doancss/[maDCS]/route.ts
+
 import { NextResponse } from 'next/server';
-// Đảm bảo đường dẫn này chính xác đến file prisma client của bạn.
-// Ví dụ: import prisma from '@/lib/prismadb';
-import prisma from "@/app/libs/prismadb"; // Giữ nguyên theo yêu cầu của bạn
+import prisma from "@/app/libs/prismadb"; // Đảm bảo đường dẫn và file này đúng
 
 interface Params {
-  maDCS: string; // maDCS này là giá trị của trường maDCS trong model DoanCS (map từ "MADCS")
+  maDCS: string;
 }
 
 // GET - Lấy chi tiết một Đoàn Cơ Sở
 export async function GET(req: Request, { params }: { params: Params }) {
-  const { maDCS } = params;
+  const { maDCS } = params; // maDCS lấy từ URL, ví dụ: /api/doancss/DCS_KHOA_CNTT
   try {
+    // Log để kiểm tra maDCS nhận được
+    console.log(`[GET /api/doancss/${maDCS}] Request received for maDCS: ${maDCS}`);
+
     const doanCS = await prisma.doanCS.findUnique({
-      where: { maDCS }, // Tìm bằng maDCS của model DoanCS
+      where: { maDCS: maDCS }, // Tìm Đoàn Cơ Sở dựa trên trường maDCS (unique) của model DoanCS
       include: {
-        chiDoans: {     // Lấy danh sách Chi Đoàn thuộc Đoàn Cơ Sở này
+        chiDoans: {     // Lấy danh sách các Chi Đoàn thuộc Đoàn Cơ Sở này
           orderBy: {
-            tenCD: 'asc'
+            tenCD: 'asc' // Sắp xếp các Chi Đoàn theo tên
           },
-          include: { // Nếu muốn đếm số lượng đoàn viên trong mỗi chi đoàn con
+          include: { // Lấy thêm thông tin lồng sâu hơn cho mỗi Chi Đoàn
+            // Ví dụ: đếm số đoàn viên của mỗi Chi Đoàn
             _count: {
               select: { doanViens: true }
-            }
+            },
+            // Bạn cũng có thể include thông tin đoàn viên nếu cần:
+            // doanViens: {
+            //   orderBy: { tenDV: 'asc' },
+            //   include: { doanPhi: true } // Ví dụ
+            // }
           }
         },
       },
     });
 
+    // Log kết quả query từ Prisma
+    console.log(`[GET /api/doancss/${maDCS}] Prisma query result:`, JSON.stringify(doanCS, null, 2));
+
     if (!doanCS) {
+      console.log(`[GET /api/doancss/${maDCS}] DoanCS not found in database.`);
       return NextResponse.json({ message: `Đoàn Cơ Sở với mã '${maDCS}' không tìm thấy.` }, { status: 404 });
     }
+
+    // Dữ liệu trả về đã bao gồm danh sách chiDoans
+    console.log(`[GET /api/doancss/${maDCS}] Response data (includes chiDoans):`, JSON.stringify(doanCS, null, 2));
     return NextResponse.json(doanCS);
-  } catch (error) {
-    console.error(`GET /api/doancss/${maDCS} error:`, error);
+
+  } catch (error: any) {
+    console.error(`[GET /api/doancss/${maDCS}] Error:`, error);
     return NextResponse.json(
-      { message: `Lỗi khi lấy thông tin Đoàn Cơ Sở '${maDCS}'`, error: (error as Error).message },
+      { message: `Lỗi khi lấy thông tin Đoàn Cơ Sở '${maDCS}'`, error: error.message },
       { status: 500 }
     );
   }
 }
 
-// PUT - Cập nhật thông tin Đoàn Cơ Sở
+// PUT - Cập nhật thông tin Đoàn Cơ Sở (Giữ nguyên như code bạn cung cấp)
 export async function PUT(req: Request, { params }: { params: Params }) {
-  const { maDCS: maDCSFromParams } = params; // maDCS từ URL
+  // ... (code PUT của bạn) ...
+  // Logic PUT của bạn đã đúng, chỉ cập nhật tenDCS.
+  const { maDCS: maDCSFromParams } = params;
   let requestData: any;
 
   try {
     requestData = await req.json();
-    const {
-      tenDCS, // Tên Đoàn Cơ Sở mới (map tới "TENDCS")
-      // maDCS trong body không nên cho phép thay đổi vì nó là unique key, thường không đổi
-    } = requestData;
+    const { tenDCS } = requestData;
 
-    // Dữ liệu để cập nhật
     const updateData: any = {};
-    if (tenDCS !== undefined) updateData.tenDCS = tenDCS; // Cập nhật trường tenDCS của model
+    if (tenDCS !== undefined) updateData.tenDCS = tenDCS;
 
     if (Object.keys(updateData).length === 0) {
         return NextResponse.json({ message: 'Không có dữ liệu nào được cung cấp để cập nhật.' }, { status: 400 });
     }
 
     const updatedDoanCS = await prisma.doanCS.update({
-      where: { maDCS: maDCSFromParams }, // Tìm DoanCS bằng maDCS (map từ "MADCS")
+      where: { maDCS: maDCSFromParams },
       data: updateData,
     });
 
     return NextResponse.json(updatedDoanCS);
   } catch (error: any) {
     console.error(`PUT /api/doancss/${maDCSFromParams} error:`, error);
-    if (error.code === 'P2025') { // Lỗi không tìm thấy bản ghi để cập nhật
-      // P2025 message của Prisma "An operation failed because it depends on one or more records that were required but not found. {cause}"
+    if (error.code === 'P2025') {
       const cause = error.meta?.cause as string || "";
       if (cause.toLowerCase().includes("record to update not found")) {
          return NextResponse.json({ message: `Đoàn Cơ Sở với mã '${maDCSFromParams}' không tìm thấy.` }, { status: 404 });
@@ -83,18 +97,17 @@ export async function PUT(req: Request, { params }: { params: Params }) {
   }
 }
 
-// DELETE - Xoá Đoàn Cơ Sở
+// DELETE - Xoá Đoàn Cơ Sở (Giữ nguyên như code bạn cung cấp)
 export async function DELETE(req: Request, { params }: { params: Params }) {
-  const { maDCS } = params; // maDCS từ URL
+  // ... (code DELETE của bạn) ...
+  // Logic DELETE của bạn đã đúng, bao gồm kiểm tra ChiDoan con.
+  const { maDCS } = params;
   try {
-    // 1. Kiểm tra sự tồn tại của Đoàn Cơ Sở
     const doanCSExists = await prisma.doanCS.findUnique({ where: {maDCS}});
     if (!doanCSExists) {
         return NextResponse.json({ message: `Đoàn Cơ Sở với mã '${maDCS}' không tìm thấy để xóa.` }, { status: 404 });
     }
 
-    // 2. Kiểm tra xem Đoàn Cơ Sở có Chi Đoàn nào không trước khi xóa
-    //    Trường liên kết trong ChiDoan là maDCS (map từ "MADCS")
     const chiDoansInDoanCS = await prisma.chiDoan.count({
       where: { maDCS: maDCS },
     });
@@ -102,22 +115,20 @@ export async function DELETE(req: Request, { params }: { params: Params }) {
     if (chiDoansInDoanCS > 0) {
       return NextResponse.json(
         { message: `Không thể xóa Đoàn Cơ Sở '${maDCS}' vì vẫn còn ${chiDoansInDoanCS} Chi Đoàn thuộc Đoàn Cơ Sở này. Vui lòng chuyển hoặc xóa các Chi Đoàn trước.` },
-        { status: 409 } // 409 Conflict
+        { status: 409 }
       );
     }
 
-    // 3. Nếu không có Chi Đoàn, tiến hành xóa Đoàn Cơ Sở
     const deletedDoanCS = await prisma.doanCS.delete({
-      where: { maDCS }, // Xóa DoanCS bằng maDCS (map từ "MADCS")
+      where: { maDCS },
     });
 
     return NextResponse.json({ message: `Đoàn Cơ Sở với mã '${maDCS}' đã được xóa thành công.`, deletedData: deletedDoanCS });
   } catch (error: any) {
     console.error(`DELETE /api/doancss/${maDCS} error:`, error);
-    if (error.code === 'P2025') { // Record to delete not found (dù đã check, nhưng vẫn có thể do race condition)
+    if (error.code === 'P2025') {
         return NextResponse.json({ message: `Đoàn Cơ Sở với mã '${maDCS}' không tìm thấy.` }, { status: 404 });
     }
-    // Lỗi P2003 có thể xảy ra nếu có ràng buộc khác không được xử lý
     if (error.code === 'P2003') {
         return NextResponse.json(
             { message: `Không thể xóa Đoàn Cơ Sở '${maDCS}' do có ràng buộc khóa ngoại. Lỗi: ${error.meta?.field_name || 'Không xác định'}.` },
