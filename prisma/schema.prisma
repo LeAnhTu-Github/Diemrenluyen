@@ -10,18 +10,27 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
+enum Role {
+    USER
+    ADMIN
+    STUDENT // Ví dụ
+    TEACHER // Ví dụ
+    // Thêm các role khác nếu cần
+}
+
 model User {
     id             String     @id @default(auto()) @map("_id") @db.ObjectId
     name           String?
     email          String?    @unique
     emailVerified  DateTime?
-    class          String?
+    // class          String? // Xem xét đổi tên
+    className      String? // Đề xuất đổi tên từ 'class'
     image          String?
-    role           String? // New column
+    role           Role? // Sử dụng Enum Role
     hashedPassword String?
     createdAt      DateTime   @default(now())
     updatedAt      DateTime   @updatedAt
-    favoriteIds    String[]   @db.ObjectId
+    favoriteIds    String[]   @db.ObjectId // Mảng các ID của các đối tượng yêu thích (ví dụ: Listings)
     trainingScores Score[]
     accounts       Account[]
     registers      Register[]
@@ -32,43 +41,44 @@ model Account {
     userId            String  @db.ObjectId
     type              String
     provider          String
-    class             String?
+    // class             String? // Xem xét đổi tên
     providerAccountId String
     refresh_token     String? @db.String
     access_token      String? @db.String
-    role              String? // New column
+    role              Role? // Sử dụng Enum Role
     expires_at        Int?
     token_type        String?
-    scope             String
+    scope             String? // Thường là optional
     id_token          String? @db.String
     session_state     String?
-    user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+    user              User    @relation(fields: [userId], references: [id], onDelete: Cascade) // onDelete: Cascade được xử lý bởi Prisma client
 
     @@unique([provider, providerAccountId])
 }
 
 model Score {
     id            String   @id @default(auto()) @map("_id") @db.ObjectId
-    tradeId       String   @db.ObjectId
-    name          String?
-    email         String?
-    avatar        String?
-    classUneti    String?
-    department    String?
-    courses       String?
-    increasePoint Int
-    decreasePoint Int
+    // tradeId       String   @db.ObjectId // Xem xét đổi tên thành userId nếu nó là userId
+    userId        String   @db.ObjectId // Đề xuất đổi tên
+    name          String? // Tên của User? Hay tên bài test?
+    email         String? // Email của User?
+    avatar        String? // Avatar của User?
+    classUneti    String? // Lớp của User tại Uneti?
+    department    String? // Khoa của User?
+    courses       String? // Môn học/Khóa học liên quan đến điểm?
+    increasePoint Int      @default(0)
+    decreasePoint Int      @default(0)
     totalScore    Int
-    imageSrc      String
+    imageSrc      String? // URL ảnh minh chứng? Nên là optional nếu không phải lúc nào cũng có
     createdAt     DateTime @default(now())
     updatedAt     DateTime @updatedAt
-    user          User     @relation(fields: [tradeId], references: [id])
+    user          User     @relation(fields: [userId], references: [id]) // Liên kết với User qua userId
 }
 
 model Register {
     id         String   @id @default(auto()) @map("_id") @db.ObjectId
     userId     String   @db.ObjectId
-    msv        String?
+    msv        String? // Mã sinh viên
     name       String?
     email      String?
     phone      String?
@@ -80,23 +90,23 @@ model Register {
 }
 
 model ChiDoan {
-    id        String    @id @default(auto()) @map("_id") @db.ObjectId
-    maCD      String    @unique @map("MACD")
-    tenCD     String    @map("TENCD")
-    maDCS     String    @map("MADCS")
-    doanCS    DoanCS    @relation(fields: [maDCS], references: [maDCS])
+    id        String     @id @default(auto()) @map("_id") @db.ObjectId
+    maCD      String     @unique @map("MACD") // Giữ nguyên nếu tên DB là MACD
+    tenCD     String     @map("TENCD") // Giữ nguyên nếu tên DB là TENCD
+    maDCS     String     @map("MADCS") // Giữ nguyên nếu tên DB là MADCS
+    doanCS    DoanCS     @relation(fields: [maDCS], references: [maDCS])
     doanViens DoanVien[]
-    createdAt DateTime  @default(now())
-    updatedAt DateTime  @updatedAt
+    createdAt DateTime   @default(now())
+    updatedAt DateTime   @updatedAt
 }
 
 model DoanCS {
-    id        String     @id @default(auto()) @map("_id") @db.ObjectId
-    maDCS     String     @unique @map("MADCS")
-    tenDCS    String     @map("TENDCS")
+    id        String    @id @default(auto()) @map("_id") @db.ObjectId
+    maDCS     String    @unique @map("MADCS")
+    tenDCS    String    @map("TENDCS")
     chiDoans  ChiDoan[]
-    createdAt DateTime   @default(now())
-    updatedAt DateTime   @updatedAt
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
 }
 
 model DoanPhi {
@@ -110,48 +120,48 @@ model DoanPhi {
     hk6       Int      @default(0) @map("HK6")
     hk7       Int      @default(0) @map("HK7")
     hk8       Int      @default(0) @map("HK8")
-    doanVien  DoanVien @relation(fields: [maDV], references: [maDV])
+    doanVien  DoanVien @relation(fields: [maDV], references: [maDV]) // onDelete sẽ cần xử lý ở tầng ứng dụng
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 }
 
 model DoanVien {
-    id           String     @id @default(auto()) @map("_id") @db.ObjectId
-    maDV         String     @unique @map("MADV")
-    hoDV         String     @map("HODV")
-    tenDV        String     @map("TENDV")
-    maCD         String     @map("MACD")
-    ngaySinh     DateTime   @map("NGAYSINH")
-    gioiTinh     Int        @map("GIOITINH")
-    ngayVaoDoan  DateTime   @map("NGAYVAODOAN")
-    queQuan      String     @map("QUEQUAN")
-    chucVu       String     @map("CHUCVU")
-    chiDoan      ChiDoan    @relation(fields: [maCD], references: [maCD])
-    doanPhi      DoanPhi?
-    ktkls        KTKL[]
-    renLuyens    RenLuyen[]
-    createdAt    DateTime   @default(now())
-    updatedAt    DateTime   @updatedAt
+    id          String     @id @default(auto()) @map("_id") @db.ObjectId
+    maDV        String     @unique @map("MADV")
+    hoDV        String     @map("HODV")
+    tenDV       String     @map("TENDV")
+    maCD        String     @map("MACD") // Mã Chi Đoàn mà Đoàn viên này thuộc về
+    ngaySinh    DateTime   @map("NGAYSINH")
+    gioiTinh    Int        @map("GIOITINH") // 0: Nam, 1: Nữ, hoặc dùng Enum
+    ngayVaoDoan DateTime   @map("NGAYVAODOAN")
+    queQuan     String     @map("QUEQUAN")
+    chucVu      String     @map("CHUCVU")
+    chiDoan     ChiDoan    @relation(fields: [maCD], references: [maCD])
+    doanPhi     DoanPhi? // Quan hệ một-một với DoanPhi
+    ktkls       KTKL[] // Khen thưởng kỷ luật
+    renLuyens   RenLuyen[] // Điểm rèn luyện
+    createdAt   DateTime   @default(now())
+    updatedAt   DateTime   @updatedAt
 }
 
 model KTKL {
     id        String   @id @default(auto()) @map("_id") @db.ObjectId
-    maDV      String   @map("MADV")
+    maDV      String   @map("MADV") // Mã Đoàn viên liên quan
     ngay      DateTime @map("NGAY")
     hinhThuc  String   @map("HINHTHUC")
     ghiChu    String   @map("GHICHU")
-    doanVien  DoanVien @relation(fields: [maDV], references: [maDV])
+    doanVien  DoanVien @relation(fields: [maDV], references: [maDV]) // onDelete sẽ cần xử lý ở tầng ứng dụng
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 }
 
 model RenLuyen {
     id        String   @id @default(auto()) @map("_id") @db.ObjectId
-    maDV      String   @map("MADV")
+    maDV      String   @map("MADV") // Mã Đoàn viên liên quan
     hocKy     Int      @map("HOCKY")
     diem      Int      @map("DIEM")
     xepLoai   String   @map("XEPLOAI")
-    doanVien  DoanVien @relation(fields: [maDV], references: [maDV])
+    doanVien  DoanVien @relation(fields: [maDV], references: [maDV]) // onDelete sẽ cần xử lý ở tầng ứng dụng
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
