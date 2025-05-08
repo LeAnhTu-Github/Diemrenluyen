@@ -2,6 +2,13 @@
 import React from "react";
 import { FaHome } from "react-icons/fa";
 import { MdInfoOutline, MdCreditScore, MdEvent } from "react-icons/md";
+import { 
+  RiTeamLine,
+  RiGroupLine,
+  RiUserLine,
+  RiFileChartLine,
+  RiFeedbackLine,
+} from "react-icons/ri";
 import { usePathname, useRouter } from "next/navigation";
 import { SafeUser } from "@/app/types";
 
@@ -11,11 +18,11 @@ interface SidebarProps {
 
 const adminLinks = [
   { label: "Sự kiện", path: "/teacher/events", icon: MdEvent },
-  { label: "Đoàn cơ sở", path: "/teacher/doancoso", icon: MdInfoOutline },
-  { label: "Chi đoàn", path: "/teacher/chidoan", icon: MdInfoOutline },
-  { label: "Đoàn viên", path: "/teacher/doanvien", icon: MdInfoOutline },
-  { label: "Điểm rèn luyện", path: "/teacher/score", icon: MdCreditScore },
-  { label: "Đánh giá", path: "/teacher/danhgia", icon: MdCreditScore },
+  { label: "Đoàn cơ sở", path: "/teacher/doancoso", icon: RiTeamLine },
+  { label: "Chi đoàn", path: "/teacher/chidoan", icon: RiGroupLine },
+  { label: "Đoàn viên", path: "/teacher/doanvien", icon: RiUserLine },
+  { label: "Điểm rèn luyện", path: "/teacher/score", icon: RiFileChartLine },
+  { label: "Đánh giá", path: "/teacher/danhgia", icon: RiFeedbackLine },
 ];
 
 const userLinks = [
