@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { FaHome } from "react-icons/fa";
-import { MdInfoOutline, MdCreditScore, MdEvent } from "react-icons/md";
+import { MdInfoOutline, MdCreditScore, MdEvent, MdDashboard } from "react-icons/md";
 import { 
   RiTeamLine,
   RiGroupLine,
@@ -17,6 +17,8 @@ interface SidebarProps {
 }
 
 const adminLinks = [
+  { label: "Dashboard", path: "/teacher/dashboard", icon: MdDashboard },
+  { label: "Quản lý người dùng", path: "/teacher/users", icon: RiUserLine },
   { label: "Sự kiện", path: "/teacher/events", icon: MdEvent },
   { label: "Đoàn cơ sở", path: "/teacher/doancoso", icon: RiTeamLine },
   { label: "Chi đoàn", path: "/teacher/chidoan", icon: RiGroupLine },

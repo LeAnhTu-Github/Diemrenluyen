@@ -84,6 +84,7 @@ model Event {
   isPublished Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  userRegister userRegister[]
 }
 
 model userRegister {
@@ -98,6 +99,7 @@ model userRegister {
   isRegister Boolean  @default(false)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+  event      Event    @relation(fields: [eventId], references: [id])
 }
 model Register {
     id         String   @id @default(auto()) @map("_id") @db.ObjectId

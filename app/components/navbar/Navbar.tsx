@@ -28,7 +28,7 @@ const Navbar: React.FC<NavbarProps> = ({ currentUser }) => {
             md:gap-0
           "
           >
-            <h1 className=" font-bold text-xl">Home</h1>
+            <h1 className=" font-bold text-xl">Trang chủ</h1>
             <UserMenu currentUser={currentUser} />
           </div>
         </Container>

@@ -13,8 +13,8 @@ import getCurrentUser from "./actions/getCurrentUser";
 const font = Nunito({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "NCKH - Điểm rèn luyện",
-  description: "Website quản lý điểm rèn luyện của sinh viên",
+  title: "Quản lý đoàn viên",
+  description: "Website quản lý đoàn viên",
 };
 
 export default async function RootLayout({

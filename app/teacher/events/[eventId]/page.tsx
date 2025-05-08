@@ -39,12 +39,12 @@ const EventIdPage = async ({ params }: { params: { eventId: string } }) => {
     return redirect("/teacher/events?error=event-not-found");
   }
 
-  const isAdmin = currentUser?.role === "ADMIN" ||currentUser?.role === "MANAGER";
+  const isAdmin = currentUser?.role === "admin" ||currentUser?.role === "manager";
   const isOwner = event.userId === userId;
 
-  if (!isAdmin && !isOwner) {
-    return redirect("/teacher/events?error=unauthorized");
-  }
+  // if (!isAdmin && !isOwner) {
+  //   return redirect("/teacher/events?error=unauthorized");
+  // }
 
   const requiredFields = [
     event.title,
