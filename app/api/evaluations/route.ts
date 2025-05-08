@@ -4,8 +4,6 @@ import { z } from "zod";
 
 // Zod schema for validation
 const evaluationSchema = z.object({
-  userId: z.string(),
-  year: z.number(),
   semester: z.number().optional(),
   strengths: z.string().optional(),
   weaknesses: z.string().optional(),
@@ -19,19 +17,19 @@ const evaluationSchema = z.object({
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
+    console.log("POST /api/evaluations body:", body);
     const data = evaluationSchema.parse(body);
 
-    // Kiểm tra đã có đánh giá cho userId + year + semester chưa
+    // Kiểm tra đã có đánh giá cho maDV + semester chưa
     const existing = await prisma.evaluation.findFirst({
       where: {
-        userId: data.userId,
-        year: data.year,
+        maDV: data.maDV,
         semester: data.semester,
       },
     });
     if (existing) {
       return NextResponse.json(
-        { error: "Đã tồn tại đánh giá cho người dùng này." },
+        { error: "Đã tồn tại đánh giá cho đơn vị này." },
         { status: 400 }
       );
     }
@@ -60,5 +58,52 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json(updated, { status: 200 });
   } catch (error: any) {
     return NextResponse.json({ error: error.message || "Lỗi không xác định" }, { status: 400 });
+  }
+}
+
+// GET: Lấy đánh giá theo maDV và semester
+export async function GET(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const maDV = searchParams.get("maDV");
+    const semester = searchParams.get("semester");
+    const searchMaDV = searchParams.get("searchMaDV");
+    const searchSemester = searchParams.get("searchSemester");
+
+    const where: any = {};
+
+    if (maDV) {
+      where.maDV = maDV;
+    }
+
+    if (semester) {
+      where.semester = parseInt(semester);
+    }
+
+    if (searchMaDV) {
+      where.maDV = {
+        contains: searchMaDV,
+        mode: 'insensitive'
+      };
+    }
+
+    if (searchSemester) {
+      where.semester = parseInt(searchSemester);
+    }
+
+    const evaluations = await prisma.evaluation.findMany({
+      where,
+      include: {
+        doanVien: true
+      }
+    });
+
+    return NextResponse.json(evaluations);
+  } catch (error) {
+    console.error("Error fetching evaluations:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch evaluations" },
+      { status: 500 }
+    );
   }
 }

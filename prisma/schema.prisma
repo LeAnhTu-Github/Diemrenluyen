@@ -195,8 +195,6 @@ model RenLuyen {
 
 model Evaluation {
     id           String   @id @default(auto()) @map("_id") @db.ObjectId
-    userId       String   @db.ObjectId // Tham chiếu tới đoàn viên (User hoặc DoanVien)
-    year         Int
     semester     Int?     // Nếu đánh giá theo học kỳ, có thể nullable
     strengths    String?  // Ưu điểm
     weaknesses   String?  // Khuyết điểm

@@ -38,7 +38,7 @@ const Home = async () => {
         <div className="max-w-[2520px] mx-auto">
           <Section currentUser={currentUser} />
           <New events={events} userId={currentUser?.id || null} regis={regisEvents}/>
-          {/* <UserStatis /> */}
+          <UserStatis />
         </div>
       </ClientOnly>
     </div>
